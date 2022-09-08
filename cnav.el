@@ -10,6 +10,7 @@
 ;; TODO: do various flymake levels?
 
 (declare-function flymake--overlays (&key beg end filter compare key))
+(declare-function flymake-goto-next-error (&optional n filter interactive))
 
 (defun cnav-flymake-loci ()
   "Identify flymake loci."
@@ -22,17 +23,27 @@
   "Default loci."
   'next-error)
 
+(declare-function smerge-find-conflict (&optional limit))
+
+(defun cnav-smerge-loci ()
+  "Identify smerge loci."
+  (when (and (bound-and-true-p smerge-mode)
+             (save-excursion (goto-char (point-min))
+                             (smerge-find-conflict (point-max))))
+    'smerge-next))
 
 (defcustom cnav-loci
-  '(;; cnav-smerge-loci
+  '(cnav-smerge-loci
     cnav-flymake-loci
     ;; cnav-flymake-info-loci
     ;; cnav-flycheck-loci
-    ;; cnav-flyspell-loci
+    ;; cnav-flyspell-loci ; not very useful
     cnav-error-loci)
   "List of functions to determine contextually meaningful navigation targets.
 Each function should take no argument and return either nil to
-indicate it found no target or a list of the form (prev-function next-function)"
+indicate it found no locus, or a function to go to nearby
+locus.  This function takes an integer which is the number of loci
+to move."
   :type 'hook
   :group 'cnav)
 
