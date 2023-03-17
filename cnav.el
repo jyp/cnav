@@ -19,6 +19,14 @@
     (lambda (n)
       (flymake-goto-next-error n nil t))))
 
+(defun cnav-flymake-loci-severity (severity)
+  "Identify flymake loci of given SEVERITY."
+  (when (and (bound-and-true-p flymake-mode)
+             (--some (eq (flymake-diagnostic-type it) severity) (flymake-diagnostics)))
+    (lambda (n)
+      (flymake-goto-next-error n (list severity) t))))
+
+
 (defun cnav-error-loci ()
   "Default loci."
   'next-error)
