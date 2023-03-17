@@ -37,7 +37,7 @@
     cnav-flymake-loci
     ;; cnav-flymake-info-loci
     ;; cnav-flycheck-loci
-    ;; cnav-flyspell-loci ; not very useful
+    ;; cnav-flyspell-loci ; not very useful because flyspell only looks at the current line anyway
     cnav-error-loci)
   "List of functions to determine contextually meaningful navigation targets.
 Each function should take no argument and return either nil to
