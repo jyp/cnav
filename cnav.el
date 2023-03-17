@@ -35,7 +35,7 @@
 (defcustom cnav-loci
   '(cnav-smerge-loci
     cnav-flymake-loci
-    ;; cnav-flymake-info-loci
+    ;; cnav-flymake-info-loci ;; hint: (flymake-diagnostic-type (car (flymake-diagnostics)))
     ;; cnav-flycheck-loci
     ;; cnav-flyspell-loci ; not very useful because flyspell only looks at the current line anyway
     cnav-error-loci)
