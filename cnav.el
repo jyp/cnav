@@ -1,3 +1,4 @@
+;;; cnav --- Contextual navigation -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 
@@ -12,14 +13,12 @@
 (require 's)
 (require 'thingatpt)
 
-
-;; TODO: do various flymake levels?
-
 (declare-function flymake--overlays (&key beg end filter compare key))
 (declare-function flymake-goto-next-error (&optional n filter interactive))
+(declare-function flymake-diagnostic-type (diagnostic))
 
 (defun cnav-flymake-loci ()
-  "Identify flymake loci."
+  "Identify all flymake loci, regardless of severity."
   (when (and (bound-and-true-p flymake-mode)
              (flymake--overlays))
     (lambda (n)
@@ -32,6 +31,9 @@
     (lambda (n)
       (flymake-goto-next-error n (list severity) t))))
 
+(defun cnav-flymake-warning-loci () "Identify flymake warning loci." (cnav-flymake-loci-severity :warning))
+(defun cnav-flymake-error-loci () "Identify flymake error loci." (cnav-flymake-loci-severity :error))
+(defun cnav-flymake-note-loci () "Identify flymake note loci." (cnav-flymake-loci-severity :note))
 
 (defun cnav-error-loci ()
   "Default loci."
@@ -48,8 +50,9 @@
 
 (defcustom cnav-loci
   '(cnav-smerge-loci
-    cnav-flymake-loci
-    ;; cnav-flymake-info-loci ;; hint: (flymake-diagnostic-type (car (flymake-diagnostics)))
+    cnav-flymake-error-loci
+    cnav-flymake-warning-loci
+    cnav-flymake-note-loci
     ;; cnav-flycheck-loci
     ;; cnav-flyspell-loci ; not very useful because flyspell only looks at the current line anyway
     cnav-error-loci)
