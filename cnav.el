@@ -1,6 +1,12 @@
 
 ;;; Commentary:
 
+;; Navigate contextually-salient places (loci) in the
+;; buffer.  Typically, several minor modes will require user attention
+;; at various points in the buffer.  This package offers a single
+;; function to navigate all such places with one interface:
+;; `cnav-next'.  The salient loci are defined by `cnav-loci'.
+
 ;;; Code:
 (require 'dash)
 (require 's)
@@ -57,16 +63,16 @@ to move."
 
 
 (defun cnav-next (&optional n)
-  "Go to Nth next contextually relevant locus."
+  "Go to Nth next contextually salient locus."
   (interactive "p")
   ;; (message "cnav-next: %s" n)
   (if-let ((fun (--some (funcall it) cnav-loci)))
       (funcall fun n)
-    (error "No contextually relevant locus")))
+    (error "No contextually salient locus")))
 
 
 (defun cnav-prev (&optional n)
-  "Go to Nth previous contextually relevant locus."
+  "Go to Nth previous contextually salient locus."
   (interactive "P")
   (cnav-next (- (or n 1))))
   
