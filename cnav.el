@@ -48,8 +48,25 @@
                              (smerge-find-conflict (point-max))))
     'smerge-next))
 
+(defun cnav-mc-next (n)
+  (cond
+   ((> n 0)
+    (mc/cycle-forward)
+    (cnav-mc-next (1- n)))
+   
+   ((< n 0)
+    (mc/cycle-backward)
+    (cnav-mc-next (1+ n)))))
+
+(defun cnav-cursor-loci ()
+  "Identify cursor loci."
+  (when (and (bound-and-true-p multiple-cursors-mode)
+             (> (mc/num-cursors) 1))
+    'cnav-mc-next))
+
 (defcustom cnav-loci
-  '(cnav-smerge-loci
+  '(cnav-cursor-loci
+    cnav-smerge-loci
     cnav-flymake-error-loci
     cnav-flymake-warning-loci
     cnav-flymake-note-loci
