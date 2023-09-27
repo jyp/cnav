@@ -24,16 +24,17 @@
     (lambda (n)
       (flymake-goto-next-error n nil t))))
 
-(defun cnav-flymake-loci-severity (severity)
-  "Identify flymake loci of given SEVERITY."
+(defun cnav-flymake-loci-severity (severities)
+  "Identify flymake loci of any given SEVERITIES."
   (when (and (bound-and-true-p flymake-mode)
-             (--some (eq (flymake-diagnostic-type it) severity) (flymake-diagnostics)))
+             (--some (-some (lambda (s) (eq (flymake-diagnostic-type it) s)) severities)
+                     (flymake-diagnostics)))
     (lambda (n)
-      (flymake-goto-next-error n (list severity) t))))
+      (flymake-goto-next-error n severities t))))
 
-(defun cnav-flymake-warning-loci () "Identify flymake warning loci." (cnav-flymake-loci-severity :warning))
-(defun cnav-flymake-error-loci () "Identify flymake error loci." (cnav-flymake-loci-severity :error))
-(defun cnav-flymake-note-loci () "Identify flymake note loci." (cnav-flymake-loci-severity :note))
+(defun cnav-flymake-warning-loci () "Identify flymake warning loci." (cnav-flymake-loci-severity '(:warning eglot-warning)))
+(defun cnav-flymake-error-loci () "Identify flymake error loci." (cnav-flymake-loci-severity '(:error eglot-error)))
+(defun cnav-flymake-note-loci () "Identify flymake note loci." (cnav-flymake-loci-severity '(:note eglot-note)))
 
 (defun cnav-error-loci ()
   "Default loci."
