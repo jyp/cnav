@@ -49,6 +49,21 @@
                              (smerge-find-conflict (point-max))))
     'smerge-next))
 
+(defun cnav-agda-hole-next (n)
+  (cond
+   ((> n 0)
+    (agda2-next-goal)
+    (cnav-agda-hole-next (1- n)))
+   ((< n 0)
+    (mc/cycle-backward)
+    (agda2-previous-goal))))
+
+(defun cnav-agda-hole-loci ()
+  "Identify agda hole loci."
+  (when (and (eq major-mode 'agda2-mode)
+             (--some (overlay-get it 'agda2-gn) (overlays-in (point-min) (point-max))))
+    'cnav-agda-hole-next))
+
 (defun cnav-mc-next (n)
   (cond
    ((> n 0)
@@ -68,6 +83,7 @@
 (defcustom cnav-loci
   '(cnav-cursor-loci
     cnav-smerge-loci
+    cnav-agda-hole-loci
     cnav-flymake-error-loci
     cnav-flymake-warning-loci
     cnav-flymake-note-loci
@@ -78,7 +94,7 @@
 Each function should take no argument and return either nil to
 indicate it found no locus, or a function to go to nearby
 locus.  This function takes an integer which is the number of loci
-to move."
+to move. More specialised loci should be earlier in the list."
   :type 'hook
   :group 'cnav)
 
